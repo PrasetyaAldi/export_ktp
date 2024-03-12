@@ -1,19 +1,36 @@
 "use client";
 import React from "react";
-import { TemplateHandler } from "easy-template-x";
+import { MimeType, TemplateHandler } from "easy-template-x";
+import { PDFDocument } from "pdf-lib";
 
 const Home = () => {
   const exportKTP = async (data: any) => {
     const handler = new TemplateHandler();
-    const url = "/template/template_ktp.docx"; // URL file di dalam direktori public
+    const url = "/template/template_ktp1.docx"; // URL file di dalam direktori public
     const response = await fetch(url);
     const buffer = await response.arrayBuffer();
+    // hanya jika data.JENISKELAMIN == 'LAKI-LAKI', maka image nya adalah avatar_ktp_laki.jpg
+    // jika data.JENISKELAMIN == 'PEREMPUAN', maka image nya adalah avatar_ktp_perempuan.jpg
+    const avatar =
+      data.JENISKELAMIN === "LAKI-LAKI" ? "ktp-laki.jpg" : "ktp-perempuan.jpg";
+    // tambahkan data avatar ke dalam data
+    const images = await fetch(`${avatar}`);
+    const bufferImages = await images.arrayBuffer();
+    data.IMAGE = {
+      _type: "image",
+      source: bufferImages,
+      width: 88.32,
+      format: MimeType.Jpeg,
+      altText: "image", // Optional
+      height: 90.5,
+    };
     const doc = await handler.process(buffer, data);
 
     // save doc to file public
     const blob = new Blob([doc], {
       type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     });
+
     const urlFile = URL.createObjectURL(blob);
     let a = document.createElement("a");
     a.href = urlFile;
@@ -76,7 +93,7 @@ const Home = () => {
                 type="text"
                 id="tmptanggallahir"
                 name="tmptanggallahir"
-                placeholder="Masukkan Tempat Tanggal Lahir"
+                placeholder="Masukkan Tempat, Tanggal Lahir"
                 className="block w-full p-2 ring-1 ring-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
               />
               <div className="text-xs mt-1 text-gray-400">
@@ -85,13 +102,21 @@ const Home = () => {
             </div>
             <div className="mb-4">
               <label htmlFor="jeniskelamin">Jenis Kelamin</label>
-              <input
+              {/* <input
                 type="text"
                 id="jeniskelamin"
                 name="jeniskelamin"
                 placeholder="Masukkan Jenis Kelamin"
                 className="block w-full p-2 ring-1 ring-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-              />
+              /> */}
+              <select
+                name="jeniskelamin"
+                id="jeniskelamin"
+                className="block w-full p-2 ring-1 rounded-md focus:outline-none bg-white focus:ring-2 focus:ring-blue-500 text-black"
+              >
+                <option value="LAKI-LAKI">LAKI-LAKI</option>
+                <option value="PEREMPUAN">PEREMPUAN</option>
+              </select>
             </div>
             <div className="mb-4">
               <label htmlFor="alamat">Alamat</label>
