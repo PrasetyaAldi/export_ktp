@@ -6,7 +6,7 @@ import { PDFDocument } from "pdf-lib";
 const Home = () => {
   const exportKTP = async (data: any) => {
     const handler = new TemplateHandler();
-    const url = "/template/template_ktp1.docx"; // URL file di dalam direktori public
+    const url = "/template/template_ktp.docx"; // URL file di dalam direktori public
     const response = await fetch(url);
     const buffer = await response.arrayBuffer();
     // hanya jika data.JENISKELAMIN == 'LAKI-LAKI', maka image nya adalah avatar_ktp_laki.jpg
