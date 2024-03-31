@@ -11,8 +11,13 @@ const Home = () => {
     const buffer = await response.arrayBuffer();
     // hanya jika data.JENISKELAMIN == 'LAKI-LAKI', maka image nya adalah avatar_ktp_laki.jpg
     // jika data.JENISKELAMIN == 'PEREMPUAN', maka image nya adalah avatar_ktp_perempuan.jpg
-    const avatar =
-      data.JENISKELAMIN === "LAKI-LAKI" ? "ktp-laki.jpg" : "ktp-perempuan.jpg";
+    // const avatar =
+    // data.JENISKELAMIN === "LAKI-LAKI" ? "ktp-laki.jpg" : "ktp-perempuan.jpg";
+    const jenis = data.JENISKELAMIN == "LAKI-LAKI" ? "laki" : "cewek";
+    const randomNumber = Math.floor(Math.random() * (jenis == "laki" ? 4 : 2));
+
+    const avatar = `avatar_ktp_${jenis}_${randomNumber}.jpeg`;
+
     // tambahkan data avatar ke dalam data
     const images = await fetch(`${avatar}`);
     const bufferImages = await images.arrayBuffer();
